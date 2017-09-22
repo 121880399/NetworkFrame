@@ -27,6 +27,17 @@ public class Request {
         this.body=builder.body;
     }
 
+    public String getUrl(){return url;}
+
+    public String getMethod(){return method;}
+
+    public Headers getHeaders(){return headers;}
+
+    public RequestBody getBody(){return body;}
+
+    public Builder newBuilder(){return new Builder(this);}
+
+
     /**
      * 为了防止内存泄漏，使用静态内部类
      * */
@@ -38,13 +49,23 @@ public class Request {
 
         public Builder(){
             this.method="GET";
-            this.headers=new Headers().Builder();
+            this.headers=new Headers.Builder();
         }
 
         public Builder url(String url){
             if(url==null) throw new NullPointerException("url==null");
             this.url=url;
             return this;
+        }
+
+        /**
+         * 专门给newBuilder用的
+         * */
+        Builder(Request request){
+            this.url=request.url;
+            this.method=request.method;
+            this.headers=request.headers.newBuilder();
+            this.body=request.body;
         }
 
         /**
@@ -59,7 +80,7 @@ public class Request {
          * 添加请求头参数
          * */
         public Builder addHeader(String name,String value){
-            this.headers.add(name.value);
+            this.headers.add(name,value);
             return this;
         }
 
